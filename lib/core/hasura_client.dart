@@ -15,4 +15,7 @@ class HasuraClient {
   }
 
   static HasuraClient get instance => _instance ??= HasuraClient.initialize();
+
+  static HasuraConnect get connect =>
+      _instance.hasuraConnect ??= HasuraClient.initialize().hasuraConnect;
 }

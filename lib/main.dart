@@ -28,8 +28,8 @@ class MainGraphQLApp extends StatelessWidget {
       routes: {
         '/': (_) => LoginPage(),
         '/home': (_) => HomePage(
-              homeController: HomeController(
-                  ChatRepository(HasuraClient.instance.hasuraConnect)),
+              homeController:
+                  HomeController(ChatRepository(HasuraClient.connect)),
             ),
         '/chat': (_) => ChatPage(),
       },
