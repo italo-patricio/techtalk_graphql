@@ -14,8 +14,9 @@ class RoomMessageModel {
   factory RoomMessageModel.fromMap(Map<String, dynamic> map) =>
       RoomMessageModel(
         id: map['id'],
-        message: map['message'],
-        registeredAt: map['registered_at'],
+        message: map['message'] != null ? map['message'] : null,
+        registeredAt:
+            map['registered_at'] ? DateTime.parse(map['registered_at']) : null,
         room: RoomModel.fromMap(map['chat_room']),
         user: UserModel.fromMap(map['chat_user']),
       );

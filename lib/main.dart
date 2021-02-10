@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:techtalk_graphql/core/hasura_client.dart';
+import 'package:techtalk_graphql/pages/chat/chat_controller.dart';
 import 'package:techtalk_graphql/pages/chat/chat_page.dart';
 import 'package:techtalk_graphql/pages/home/home_controller.dart';
 import 'package:techtalk_graphql/pages/home/home_page.dart';
 import 'package:techtalk_graphql/pages/login/login_page.dart';
 import 'package:techtalk_graphql/repositories/chat_repository.dart';
 
-const URL_BASE = 'http://localhost:8080/v1/graphql';
+const URL_BASE = 'https://0e3bcca25fc2.ngrok.io/v1/graphql';
 
 void main() {
   HasuraClient.initialize(urBase: URL_BASE);
@@ -24,14 +25,16 @@ class MainGraphQLApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         backgroundColor: Colors.white,
       ),
-      initialRoute: '/',
+      initialRoute: '/chat',
       routes: {
         '/': (_) => LoginPage(),
         '/home': (_) => HomePage(
               homeController:
                   HomeController(ChatRepository(HasuraClient.connect)),
             ),
-        '/chat': (_) => ChatPage(),
+        '/chat': (_) => ChatPage(
+            chatController:
+                ChatController(ChatRepository(HasuraClient.connect))),
       },
     );
   }

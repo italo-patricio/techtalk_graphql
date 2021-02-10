@@ -12,11 +12,12 @@ abstract class _HomeControllerBase with Store {
   @observable
   Snapshot<List<RoomModel>> _snapshotRoomModel;
 
-  _HomeControllerBase(this._chatRepository) {
-    getRooms();
-  }
+  _HomeControllerBase(this._chatRepository);
 
   Future getRooms() async {
+    if (_snapshotRoomModel != null) {
+      _snapshotRoomModel.close();
+    }
     _snapshotRoomModel = await _chatRepository.loadRooms();
   }
 

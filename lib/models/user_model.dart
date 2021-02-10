@@ -9,7 +9,7 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
         id: map['id'],
         login: map['login'],
-        createdAt: map['created_at'],
+        createdAt: DateTime.parse(map['created_at']),
         online: map['online'],
       );
 }

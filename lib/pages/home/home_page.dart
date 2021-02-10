@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:techtalk_graphql/models/room_model.dart';
 import 'package:techtalk_graphql/pages/home/home_controller.dart';
 
 class HomePage extends StatefulWidget {
@@ -33,40 +34,53 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Bate papo Elo7'),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.replay_outlined),
+              onPressed: () {
+                _homeController.getRooms();
+              })
+        ],
       ),
-      body: StreamBuilder<Object>(
-          stream: _homeController.roomList,
-          builder: (context, snapshot) {
-            if (_homeController.roomList?.hasError ?? false) {
-              return Center(
-                child: Text('Ocorreu um erro ao realizar a requisição'),
-              );
-            }
+      body: Observer(builder: (_) {
+        if (_homeController.roomList?.hasError ?? false) {
+          return Center(
+            child: Text('Ocorreu um erro ao realizar a requisição'),
+          );
+        }
 
-            if (snapshot?.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
+        if (_homeController?.roomList?.value == null) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-            if (_homeController?.roomList?.value == null &&
-                snapshot?.connectionState == ConnectionState.done) {
-              return Center(child: Text('Nada para exibir'));
-            }
+        if (_homeController?.roomList?.value?.isEmpty ?? true) {
+          return Center(child: Text('Nada para exibir'));
+        }
 
-            if (snapshot.data == null)
-              return Container(
-                  child: ListView.builder(
-                      itemCount: _homeController?.roomList?.value?.length,
-                      itemBuilder: (_, index) {
-                        final item = _homeController?.roomList?.value[index];
-                        return ListTile(
-                          title: Text('${item.title}'),
-                          subtitle: Text('Aqui é tudo livre...'),
-                          trailing: IconButton(
-                              icon: Icon(Icons.arrow_right_sharp),
-                              onPressed: null),
-                        );
-                      }));
-          }),
+        return Container(
+            child: ListView.builder(
+                itemCount: _homeController?.roomList?.value?.length,
+                itemBuilder: (_, index) {
+                  final item = _homeController?.roomList?.value[index];
+                  return ListTile(
+                    title: Text('${item.title}'),
+                    subtitle: Text('Aqui é tudo livre...'),
+                    trailing: IconButton(
+                        icon: Icon(Icons.arrow_right_sharp),
+                        onPressed: () {
+                          _navigateToChat(item);
+                        }),
+                    onTap: () {
+                      _navigateToChat(item);
+                    },
+                  );
+                }));
+      }),
     );
+  }
+
+  _navigateToChat(RoomModel roomModel) {
+    Navigator.of(context)
+        .pushNamed('/chat', arguments: {'roomModel': roomModel});
   }
 }
