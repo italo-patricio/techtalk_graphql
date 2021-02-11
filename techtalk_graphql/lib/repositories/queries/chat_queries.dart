@@ -50,3 +50,15 @@ const String newUserMutation = r'''
   }
 }
 ''';
+
+const String sendMessageMutation = r'''
+mutation sendMessage($roomId: Int!, $userId: Int!, $message: String!){
+  insert_chat_room_message(objects:{
+    chat_room_id: $roomId,
+    chat_user_id: $userId,
+    message: $message
+  }){
+    affected_rows
+  }
+}
+''';

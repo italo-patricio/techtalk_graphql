@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:techtalk_graphql/pages/chat/chat_controller.dart';
-
-import '../../models/room_model.dart';
-import '../../models/room_model.dart';
-import '../../models/user_model.dart';
 
 class ChatPage extends StatefulWidget {
   final ChatController chatController;
@@ -17,38 +14,41 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   ChatController _chatController;
-  RoomModel _roomModel;
-  UserModel _userModel;
 
   _ChatPageState(this._chatController);
+
+  ReactionDisposer _disposer;
 
   @override
   void initState() {
     super.initState();
+
+    _disposer = reaction((_) => _chatController.roomModel, (_) {
+      this._chatController.getRoomMessages(_chatController.roomModel.id);
+    });
   }
 
   _initAWait() async {
-    Future.delayed(Duration.zero, () {
-      this._chatController.getRoomMessages(_roomModel.id);
-    });
+    Future.delayed(Duration.zero, () {});
   }
 
   @override
   void dispose() {
     _chatController.dispose();
+    _disposer();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
-    _roomModel = args['roomModel'];
-    _userModel = args['userModel'];
+    _chatController.setRoom(args['roomModel']);
+    _chatController.setUser(args['userModel']);
 
     _initAWait();
     return Scaffold(
       appBar: AppBar(
-        title: Text('${_roomModel?.title}'),
+        title: Text('${_chatController?.roomModel?.title}'),
       ),
       body: Column(
         children: [
@@ -95,18 +95,28 @@ class _ChatPageState extends State<ChatPage> {
               }),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(bottom: 40),
-            child: TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.send),
+          Observer(builder: (_) {
+            return Container(
+              margin: EdgeInsets.only(bottom: 40),
+              child: TextFormField(
+                onChanged: _chatController.setMessage,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    onPressed: _chatController.canSendMessage
+                        ? _chatController.sendMessage
+                        : null,
+                    icon: Icon(
+                      Icons.send,
+                      color: _chatController.canSendMessage
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).disabledColor,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          )
+            );
+          })
         ],
       ),
     );

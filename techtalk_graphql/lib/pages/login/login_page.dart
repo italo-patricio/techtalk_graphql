@@ -38,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: 'Diga seu nome infeliz!!!',
                 ),
                 onChanged: (value) {
+                  // ignore: null_aware_in_condition
                   if (value?.isNotEmpty) {
                     setState(() {
                       buttonEnabled = true;
@@ -79,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
           .pushReplacementNamed('/home', arguments: userRegistered);
     }, onError: (e) {
       _scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text("Falha ao tentar registrar usuário. ${e}")));
+          SnackBar(content: Text("Falha ao tentar registrar usuário. $e")));
     });
   }
 }

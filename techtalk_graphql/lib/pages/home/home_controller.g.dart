@@ -33,9 +33,39 @@ mixin _$HomeController on _HomeControllerBase, Store {
     });
   }
 
+  final _$userModelAtom = Atom(name: '_HomeControllerBase.userModel');
+
+  @override
+  UserModel get userModel {
+    _$userModelAtom.reportRead();
+    return super.userModel;
+  }
+
+  @override
+  set userModel(UserModel value) {
+    _$userModelAtom.reportWrite(value, super.userModel, () {
+      super.userModel = value;
+    });
+  }
+
+  final _$_HomeControllerBaseActionController =
+      ActionController(name: '_HomeControllerBase');
+
+  @override
+  void setUser(UserModel value) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.setUser');
+    try {
+      return super.setUser(value);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
+userModel: ${userModel},
 roomList: ${roomList}
     ''';
   }

@@ -4,15 +4,15 @@ import 'package:techtalk_graphql/repositories/queries/chat_queries.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 
 import '../core/hasura_client.dart';
-import '../core/hasura_client.dart';
+import '../models/room_message_model.dart';
 import '../models/room_model.dart';
-import '../models/user_model.dart';
 import '../models/user_model.dart';
 
 class ChatRepository {
   HasuraConnect _hasuraConnect;
 
-  ChatRepository._(this._hasuraConnect);
+  // ignore: unused_element
+  ChatRepository._contructor(this._hasuraConnect);
 
   static ChatRepository _instance;
 
@@ -66,6 +66,21 @@ class ChatRepository {
           .mutation(newUserMutation, variables: {'name': name});
       return UserModel.fromMap(
           result['data']['insert_chat_user']['returning'][0]);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<bool> sendMessage(RoomMessageModel messageModel) async {
+    try {
+      final result =
+          await _hasuraConnect.mutation(sendMessageMutation, variables: {
+        'roomId': messageModel.room.id,
+        'userId': messageModel.user.id,
+        'message': '${messageModel.message}',
+      });
+      return result['data']['insert_chat_room_message']['affected_rows'] > 0;
     } catch (e) {
       print(e);
       return null;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:techtalk_graphql/models/room_model.dart';
 import 'package:techtalk_graphql/pages/home/home_controller.dart';
 
@@ -20,15 +21,23 @@ class _HomePageState extends State<HomePage> {
 
   UserModel userModel;
 
+  ReactionDisposer disposer;
+
   @override
   void initState() {
     _homeController.getRooms();
     super.initState();
+
+    disposer = reaction((_) => _homeController.userModel, (_) {
+      scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text("Bem vindo ${userModel?.login}")));
+    });
   }
 
   @override
   void dispose() {
     _homeController.dispose();
+    disposer();
     super.dispose();
   }
 
@@ -36,10 +45,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     this.userModel = ModalRoute.of(context).settings.arguments;
 
-    Future.delayed(Duration.zero, () {
-      scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text("Bem vindo ${userModel?.login}")));
-    });
+    _homeController.setUser(userModel);
 
     return Scaffold(
       key: scaffoldKey,
