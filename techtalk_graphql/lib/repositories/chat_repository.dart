@@ -3,12 +3,26 @@ import 'package:techtalk_graphql/models/room_model.dart';
 import 'package:techtalk_graphql/repositories/queries/chat_queries.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 
+import '../core/hasura_client.dart';
+import '../core/hasura_client.dart';
 import '../models/room_model.dart';
+import '../models/user_model.dart';
+import '../models/user_model.dart';
 
 class ChatRepository {
   HasuraConnect _hasuraConnect;
 
-  ChatRepository(this._hasuraConnect);
+  ChatRepository._(this._hasuraConnect);
+
+  static ChatRepository _instance;
+
+  ChatRepository.initialize() {
+    this._hasuraConnect = HasuraClient.connect;
+    print('criando nova instancia para ChatRepository');
+  }
+
+  static ChatRepository get instance =>
+      _instance ??= ChatRepository.initialize();
 
   Future<List<RoomModel>> loadRooms() async {
     // ignore: close_sinks
@@ -43,6 +57,18 @@ class ChatRepository {
     } catch (e) {
       print(e);
       return _snapshot;
+    }
+  }
+
+  Future<UserModel> newUser(String name) async {
+    try {
+      final result = await _hasuraConnect
+          .mutation(newUserMutation, variables: {'name': name});
+      return UserModel.fromMap(
+          result['data']['insert_chat_user']['returning'][0]);
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 }

@@ -31,3 +31,22 @@ const String loadRoomMessagesQuery = r'''
     }
   }
 ''';
+
+const String newUserMutation = r'''
+  mutation newUser($name: String!) {
+  insert_chat_user(objects:{
+    login: $name
+  } on_conflict:{
+    constraint: chat_user_login_key,
+    update_columns:[last_login_at]
+  }){
+    affected_rows
+    returning{
+      id
+      login
+      created_at
+      online
+    }
+  }
+}
+''';

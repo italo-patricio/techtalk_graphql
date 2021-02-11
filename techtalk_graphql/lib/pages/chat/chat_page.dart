@@ -4,6 +4,7 @@ import 'package:techtalk_graphql/pages/chat/chat_controller.dart';
 
 import '../../models/room_model.dart';
 import '../../models/room_model.dart';
+import '../../models/user_model.dart';
 
 class ChatPage extends StatefulWidget {
   final ChatController chatController;
@@ -16,6 +17,8 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   ChatController _chatController;
+  RoomModel _roomModel;
+  UserModel _userModel;
 
   _ChatPageState(this._chatController);
 
@@ -25,7 +28,9 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   _initAWait() async {
-    await _chatController.getRoomMessages(1);
+    Future.delayed(Duration.zero, () {
+      this._chatController.getRoomMessages(_roomModel.id);
+    });
   }
 
   @override
@@ -36,61 +41,73 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final RoomModel args = ModalRoute.of(context).settings.arguments;
-    this._chatController.getRoomMessages(args.id);
+    Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+    _roomModel = args['roomModel'];
+    _userModel = args['userModel'];
 
+    _initAWait();
     return Scaffold(
       appBar: AppBar(
-        title: Text('${args.title}'),
+        title: Text('${_roomModel?.title}'),
       ),
-      body: Container(
-        child: Observer(builder: (_) {
-          // if (snapshot.hasError) {
-          //   return Center(
-          //     child: Text('Ocorreu um erro ao realizar a requisição'),
-          //   );
-          // }
-          // if (snapshot.connectionState != ConnectionState.done) {
-          //   return Center(child: CircularProgressIndicator());
-          // }
-          if (_chatController?.messagesList?.hasError ?? false) {
-            return Center(
-              child: Text(
-                  'Ocorreu um erro ao realizar a requisição. Error: ${_chatController.messagesList.error}'),
-            );
-          }
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              child: Observer(builder: (_) {
+                if (_chatController?.messagesList?.hasError ?? false) {
+                  return Center(
+                    child: Text(
+                        'Ocorreu um erro ao realizar a requisição. Error: ${_chatController.messagesList.error}'),
+                  );
+                }
 
-          if (_chatController?.messagesList?.value == null) {
-            return Center(child: CircularProgressIndicator());
-          }
+                if (_chatController?.messagesList?.value == null) {
+                  return Center(child: CircularProgressIndicator());
+                }
 
-          if (_chatController?.messagesList?.value?.isEmpty ?? true) {
-            return Center(child: Text('Nada para exibir'));
-          }
+                if (_chatController?.messagesList?.value?.isEmpty ?? true) {
+                  return Center(child: Text('Nada para exibir'));
+                }
 
-          return ListView.builder(
-              reverse: true,
-              itemCount: _chatController?.messagesList?.value?.length,
-              itemBuilder: (_, index) {
-                final item = _chatController?.messagesList?.value[index];
+                return ListView.builder(
+                    reverse: true,
+                    itemCount: _chatController?.messagesList?.value?.length,
+                    itemBuilder: (_, index) {
+                      final item = _chatController?.messagesList?.value[index];
 
-                return ListTile(
-                  leading: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color: Colors.amber,
-                        borderRadius: BorderRadius.circular(40)),
-                    child: Hero(
-                      tag: '$index',
-                      child: Icon(Icons.person),
-                    ),
-                  ),
-                  title: Text('${item.user.login}'),
-                  subtitle: Text('${item.message}'),
-                );
-              });
-        }),
+                      return ListTile(
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              color: Colors.amber,
+                              borderRadius: BorderRadius.circular(40)),
+                          child: Hero(
+                            tag: '$index',
+                            child: Icon(Icons.person),
+                          ),
+                        ),
+                        title: Text('${item.user.login}'),
+                        subtitle: Text('${item.message}'),
+                      );
+                    });
+              }),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 40),
+            child: TextFormField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.send),
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

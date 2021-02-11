@@ -3,6 +3,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:techtalk_graphql/models/room_model.dart';
 import 'package:techtalk_graphql/pages/home/home_controller.dart';
 
+import '../../models/user_model.dart';
+
 class HomePage extends StatefulWidget {
   final HomeController homeController;
 
@@ -13,8 +15,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HomeController _homeController;
-
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   _HomePageState(this._homeController);
+
+  UserModel userModel;
 
   @override
   void initState() {
@@ -30,7 +34,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    this.userModel = ModalRoute.of(context).settings.arguments;
+
+    Future.delayed(Duration.zero, () {
+      scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text("Bem vindo ${userModel?.login}")));
+    });
+
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Bate papo Elo7'),
         actions: [
@@ -79,6 +91,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   _navigateToChat(RoomModel roomModel) {
-    Navigator.of(context).pushNamed('/chat', arguments: roomModel);
+    Navigator.of(context).pushNamed('/chat',
+        arguments: {'roomModel': roomModel, 'userModel': userModel});
   }
 }
