@@ -7,7 +7,7 @@ import 'package:techtalk_graphql/pages/home/home_page.dart';
 import 'package:techtalk_graphql/pages/login/login_page.dart';
 import 'package:techtalk_graphql/repositories/chat_repository.dart';
 
-const URL_BASE = 'https://0e3bcca25fc2.ngrok.io/v1/graphql';
+const URL_BASE = 'https://techtalk-graphql.herokuapp.com/v1/graphql';
 
 void main() {
   HasuraClient.initialize(urBase: URL_BASE);

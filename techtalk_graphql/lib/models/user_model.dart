@@ -9,7 +9,9 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
         id: map['id'],
         login: map['login'],
-        createdAt: DateTime.parse(map['created_at']),
+        createdAt: map['created_at'] != null
+            ? DateTime.parse(map['created_at'])
+            : null,
         online: map['online'],
       );
 }

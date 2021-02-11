@@ -15,8 +15,9 @@ class RoomMessageModel {
       RoomMessageModel(
         id: map['id'],
         message: map['message'] != null ? map['message'] : null,
-        registeredAt:
-            map['registered_at'] ? DateTime.parse(map['registered_at']) : null,
+        registeredAt: map['registered_at'] != null
+            ? DateTime.parse(map['registered_at'])
+            : null,
         room: RoomModel.fromMap(map['chat_room']),
         user: UserModel.fromMap(map['chat_user']),
       );

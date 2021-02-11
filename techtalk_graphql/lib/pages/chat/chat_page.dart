@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:techtalk_graphql/models/room_message_model.dart';
-import 'package:techtalk_graphql/models/user_model.dart';
 import 'package:techtalk_graphql/pages/chat/chat_controller.dart';
 
 class ChatPage extends StatefulWidget {
@@ -52,7 +50,8 @@ class _ChatPageState extends State<ChatPage> {
           // }
           if (_chatController?.messagesList?.hasError ?? false) {
             return Center(
-              child: Text('Ocorreu um erro ao realizar a requisição'),
+              child: Text(
+                  'Ocorreu um erro ao realizar a requisição. Error: ${_chatController.messagesList.error}'),
             );
           }
 

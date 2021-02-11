@@ -9,7 +9,7 @@ class RoomModel {
   factory RoomModel.fromMap(Map<String, dynamic> map) => RoomModel(
         id: map['id'],
         title: map['title'],
-        subTitle: map['subtitle'] ? map['subtitle'] : null,
+        subTitle: map['subtitle'],
         createdAt: DateTime.parse(map['created_at']),
       );
 }

@@ -1,5 +1,5 @@
 const String loadRoomsQuery = '''
-  subscription loadRooms {
+  query loadRooms {
     chat_room {
       id
       title
@@ -9,11 +9,11 @@ const String loadRoomsQuery = '''
   }
 ''';
 
-const String loadRoomMessagesQuery = '''
-  subscription loadRoomMessages(\$roomId: Int!) {
+const String loadRoomMessagesQuery = r'''
+  subscription loadRoomMessages($roomId: Int!) {
     chat_room_message(where:{
-      chat_room_id:{_eq: \$roomId}
-    }) {
+      chat_room_id:{_eq: $roomId}
+    } order_by:{registered_at:desc}) {
       id
       message
       registered_at

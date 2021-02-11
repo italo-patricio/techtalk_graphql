@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import 'package:techtalk_graphql/models/room_model.dart';
 import 'package:techtalk_graphql/pages/home/home_controller.dart';
 
@@ -43,25 +42,25 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Observer(builder: (_) {
-        if (_homeController.roomList?.hasError ?? false) {
-          return Center(
-            child: Text('Ocorreu um erro ao realizar a requisição'),
-          );
-        }
+        // if (_homeController.roomList?.hasError ?? false) {
+        //   return Center(
+        //     child: Text('Ocorreu um erro ao realizar a requisição'),
+        //   );
+        // }
 
-        if (_homeController?.roomList?.value == null) {
+        if (_homeController?.roomList == null) {
           return Center(child: CircularProgressIndicator());
         }
 
-        if (_homeController?.roomList?.value?.isEmpty ?? true) {
+        if (_homeController?.roomList?.isEmpty ?? true) {
           return Center(child: Text('Nada para exibir'));
         }
 
         return Container(
             child: ListView.builder(
-                itemCount: _homeController?.roomList?.value?.length,
+                itemCount: _homeController?.roomList?.length,
                 itemBuilder: (_, index) {
-                  final item = _homeController?.roomList?.value[index];
+                  final item = _homeController?.roomList[index];
                   return ListTile(
                     title: Text('${item.title}'),
                     subtitle: Text('Aqui é tudo livre...'),
