@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 import 'package:mobx/mobx.dart';
 import 'package:techtalk_graphql/models/room_message_model.dart';
@@ -15,6 +16,9 @@ abstract class _ChatControllerBase with Store {
   _ChatControllerBase(this._chatRepository);
 
   Future getRoomMessages(int roomId) async {
+    if (_snapshotRoomMessageModel != null) {
+      _snapshotRoomMessageModel.close();
+    }
     _snapshotRoomMessageModel =
         await _chatRepository.loadMessagesByRoom(roomId);
   }

@@ -25,7 +25,7 @@ class MainGraphQLApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         backgroundColor: Colors.white,
       ),
-      initialRoute: '/chat',
+      initialRoute: '/',
       routes: {
         '/': (_) => LoginPage(),
         '/home': (_) => HomePage(

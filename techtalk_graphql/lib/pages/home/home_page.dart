@@ -79,7 +79,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   _navigateToChat(RoomModel roomModel) {
-    Navigator.of(context)
-        .pushNamed('/chat', arguments: {'roomModel': roomModel});
+    Navigator.of(context).pushNamed('/chat', arguments: roomModel);
   }
 }

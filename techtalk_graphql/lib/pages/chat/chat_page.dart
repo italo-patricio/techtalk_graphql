@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:techtalk_graphql/pages/chat/chat_controller.dart';
 
+import '../../models/room_model.dart';
+import '../../models/room_model.dart';
+
 class ChatPage extends StatefulWidget {
   final ChatController chatController;
 
@@ -19,7 +22,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    _initAWait();
   }
 
   _initAWait() async {
@@ -34,9 +36,12 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final RoomModel args = ModalRoute.of(context).settings.arguments;
+    this._chatController.getRoomMessages(args.id);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Aqui é o novo bate papo!'),
+        title: Text('${args.title}'),
       ),
       body: Container(
         child: Observer(builder: (_) {
